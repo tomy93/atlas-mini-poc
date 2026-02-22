@@ -1,0 +1,168 @@
+{
+  "hotelId": "seven_pines_ibiza_es",
+  "name": "7Pines Resort Ibiza",
+  "country": "Spain",
+  "region": "Ibiza",
+  "category": "Resort",
+  "ownerTeam": "Destination Specialists",
+  "version": "v1",
+  "lastUpdatedAt": "2026-02-20",
+  "policy": {
+    "maxAgeDaysBySourceType": {
+      "promotion": 120,
+      "contract": 365,
+      "site_visit": 730,
+      "post_trip_feedback": 730,
+      "booking_intelligence": 365,
+      "ujv_pov": 365,
+      "unstructured_chunk": 365
+    }
+  },
+  "positioningTags": ["ultra-luxury", "coastal", "scenic", "serene", "wellness"],
+  "positioning": {
+    "strengths": [
+      "Scenic coastal setting with strong sunset and sea-view appeal",
+      "Contemporary Mediterranean suites and villas with an upscale, relaxed design language",
+      "Resort experience balances island access with a calm, retreat-style atmosphere"
+    ],
+    "sourceIds": ["sv_2025_06_lucia_7pines", "pov_2026_01_7pines_ibiza", "sv_2025_07_ops_arrivals_7pines"]
+  },
+  "travelerFit": {
+    "common": [
+      "Best for travelers seeking a polished island stay with strong on-property comfort and scenic downtime",
+      "Works best when dining, transfers, and activity plans are arranged in advance during peak periods"
+    ],
+    "byType": {
+      "honeymoon": [
+        "Strong fit for couples wanting sunset-facing luxury, privacy, and a refined resort base",
+        "Good option for honeymooners who want optional Ibiza exploration without a party-led stay"
+      ],
+      "multi_gen_family": [
+        "Good fit for families prioritizing suite/villa space and flexible island days",
+        "Less ideal for families expecting a heavily programmed kids-club-first resort experience"
+      ],
+      "solo_wellness": [
+        "Strong fit for solo wellness travelers who value spa time, sea views, and a calmer rhythm",
+        "Well suited to travelers mixing restorative treatments with light activity"
+      ],
+      "corporate_executive": [
+        "Selective fit for senior travelers combining recovery time with discreet luxury",
+        "Better for small leadership stays than conference-scale group programs"
+      ]
+    },
+    "sourceIds": {
+      "common": ["sv_2025_06_lucia_7pines", "bi_2025_q4_7pines_ibiza"],
+      "honeymoon": ["ptf_2025_09_couples_7pines", "sv_2025_06_lucia_7pines"],
+      "multi_gen_family": ["sv_2025_08_mateo_7pines_family", "ptf_2024_07_family_7pines"],
+      "solo_wellness": ["sv_2025_06_lucia_7pines", "pov_2026_01_7pines_ibiza"],
+      "corporate_executive": ["bi_2025_q4_7pines_ibiza", "sv_2025_07_ops_arrivals_7pines"]
+    }
+  },
+  "seasonality": {
+    "late_september": "Late September is typically a strong fit for clients who want warm sea conditions with a calmer post-peak island cadence.",
+    "peak_summer": "Peak Summer brings high demand across Ibiza; advance planning for dining, boats, and preferred room categories is important.",
+    "shoulder_apr_may": "Shoulder Season can offer a strong value-to-experience balance for luxury clients prioritizing scenery, dining, and spa time.",
+    "low_nov_mar": "Low season operations and venue availability can vary across the island; verify resort opening windows and service cadence before pitching."
+  },
+  "risks": [
+    {
+      "riskId": "party_expectation_mismatch",
+      "text": "Some clients may over-index on Ibiza nightlife expectations; 7Pines is better positioned as a serene luxury base than a party-led resort.",
+      "severity": "medium",
+      "seasonRelevance": ["late_september", "peak_summer"],
+      "sourceIds": ["sv_2025_06_lucia_7pines", "pov_2026_01_7pines_ibiza"]
+    },
+    {
+      "riskId": "peak_demand_planning",
+      "text": "Peak summer dining and activity availability can tighten quickly without advance booking coordination.",
+      "severity": "medium",
+      "seasonRelevance": ["peak_summer", "late_september"],
+      "sourceIds": ["sv_2025_07_ops_arrivals_7pines", "ptf_2025_09_couples_7pines"]
+    },
+    {
+      "riskId": "arrival_transfer_timing",
+      "text": "Arrival experience is strongest when transfer routing and timing are clearly arranged, especially during heavy island traffic windows.",
+      "severity": "low",
+      "seasonRelevance": ["late_september", "peak_summer", "shoulder_apr_may"],
+      "sourceIds": ["sv_2025_07_ops_arrivals_7pines", "ptf_2024_07_family_7pines"]
+    }
+  ],
+  "promotions": [
+    {
+      "promoId": "promo_4nf",
+      "name": "4th Night Free",
+      "description": "4th night free on select suite and villa categories in specified windows.",
+      "validity": {
+        "bookingFrom": "2025-12-15",
+        "bookingTo": "2026-04-15",
+        "travelFrom": "2026-04-20",
+        "travelTo": "2026-07-15"
+      },
+      "eligibility": ["Select categories only", "Blackout dates apply"],
+      "sourceIds": ["promo_2026_q2_7pines_4nf"]
+    },
+    {
+      "promoId": "promo_early_booking_10",
+      "name": "Early Booking 10%",
+      "description": "10% discount for eligible advance purchase bookings.",
+      "validity": {
+        "bookingFrom": "2025-12-15",
+        "bookingTo": "2026-05-31",
+        "travelFrom": "2026-04-01",
+        "travelTo": "2026-10-31"
+      },
+      "eligibility": ["Advance purchase required", "Payment and cancellation restrictions apply"],
+      "sourceIds": ["promo_2026_q2_7pines_eb10"]
+    }
+  ],
+  "contract": {
+    "sourceIds": ["ct_2025_master_7pines_ibiza"],
+    "stackingRules": [
+      {
+        "ruleId": "sr_nonstack_4nf_eb15",
+        "text": "4th Night Free cannot be combined with Early Booking discount unless a signed annex explicitly permits it.",
+        "allowsCombination": false,
+        "appliesToPromoIds": ["promo_4nf", "promo_early_booking_10"],
+        "sourceIds": ["ct_2025_master_7pines_ibiza"]
+      },
+      {
+        "ruleId": "sr_contract_controls_promos",
+        "text": "Contract annex and official promo bulletins govern combinability; internal notes and chats are non-authoritative.",
+        "allowsCombination": false,
+        "appliesToPromoIds": [],
+        "sourceIds": ["ct_2025_master_7pines_ibiza"]
+      }
+    ]
+  },
+  "bookingIntelligence": {
+    "avgBookingValueUsd": 9600,
+    "qualitativeSummary": "Upper-premium average booking value with strong summer and shoulder demand",
+    "patterns": [
+      "Couples and celebratory leisure stays over-index in late summer and early autumn",
+      "Spa and sea-view categories see strong conversion when positioned as a serene Ibiza alternative"
+    ],
+    "sourceIds": ["bi_2025_q4_7pines_ibiza"]
+  },
+  "feedbackThemes": [
+    {
+      "themeId": "ft_scenic_dining",
+      "label": "Views + dining",
+      "text": "Guests consistently praise coastal views, sunset atmosphere, and standout dining experiences centered on Spanish flavors and seafood.",
+      "sourceIds": ["ptf_2025_09_couples_7pines"]
+    },
+    {
+      "themeId": "ft_planning_coordination",
+      "label": "Pre-planning matters",
+      "text": "Trip satisfaction improves when dining, transport, and activity reservations are coordinated early during busy dates.",
+      "sourceIds": ["ptf_2025_09_couples_7pines", "ptf_2024_07_family_7pines"]
+    }
+  ],
+  "ujvPov": {
+    "talkTrack": [
+      "Sell 7Pines Resort Ibiza as a scenic, refined coastal retreat with Ibiza access, not as a party-first resort.",
+      "Lead with sea views, design-forward suites/villas, and a strong dining plus wellness story.",
+      "Qualify for desired island energy level early, then position the resort as a calm luxury base with optional exploration."
+    ],
+    "sourceIds": ["pov_2026_01_7pines_ibiza", "sv_2025_06_lucia_7pines", "bi_2025_q4_7pines_ibiza"]
+  }
+}

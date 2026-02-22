@@ -1,0 +1,168 @@
+{
+  "hotelId": "bela_vista_portimao_pt",
+  "name": "Bela Vista Hotel & Spa",
+  "country": "Portugal",
+  "region": "Algarve",
+  "category": "Boutique Hotel",
+  "ownerTeam": "Destination Specialists",
+  "version": "v1",
+  "lastUpdatedAt": "2026-02-22",
+  "policy": {
+    "maxAgeDaysBySourceType": {
+      "promotion": 120,
+      "contract": 365,
+      "site_visit": 730,
+      "post_trip_feedback": 730,
+      "booking_intelligence": 365,
+      "ujv_pov": 365,
+      "unstructured_chunk": 365
+    }
+  },
+  "positioningTags": ["luxury", "historic", "beachfront", "romantic", "boutique"],
+  "positioning": {
+    "strengths": [
+      "Historic beachfront setting with distinctive character and a more intimate luxury feel",
+      "Classic Portuguese styling and elegant interiors create a refined, romantic atmosphere",
+      "Strong culinary appeal built around Algarve flavors and fresh seafood"
+    ],
+    "sourceIds": ["sv_2025_05_ines_belavista", "pov_2026_01_belavista", "sv_2025_07_ops_belavista"]
+  },
+  "travelerFit": {
+    "common": [
+      "Best for travelers seeking a sophisticated coastal stay with historic charm and boutique-style service",
+      "Works best when room-category expectations and local activity plans are aligned early"
+    ],
+    "byType": {
+      "honeymoon": [
+        "Excellent fit for couples wanting a romantic beachfront setting with elegant design and strong dining",
+        "Strong match for travelers prioritizing charm and atmosphere over large-resort programming"
+      ],
+      "multi_gen_family": [
+        "Selective fit for smaller family groups that value location and comfort over resort-style kids programming",
+        "Less ideal for multi-gen families needing extensive on-site activities or large villa inventory"
+      ],
+      "solo_wellness": [
+        "Good fit for solo wellness travelers seeking spa time and a calm seaside base",
+        "Works well for low-key restorative stays paired with coastal walks and light exploration"
+      ],
+      "corporate_executive": [
+        "Selective fit for executives wanting a refined boutique stay and recovery-oriented downtime",
+        "Better for individual or small leadership stays than meeting-heavy programs"
+      ]
+    },
+    "sourceIds": {
+      "common": ["sv_2025_05_ines_belavista", "bi_2025_q4_belavista"],
+      "honeymoon": ["ptf_2025_08_couples_belavista", "sv_2025_05_ines_belavista"],
+      "multi_gen_family": ["sv_2024_08_joao_belavista_family", "ptf_2024_06_family_belavista"],
+      "solo_wellness": ["sv_2025_05_ines_belavista", "pov_2026_01_belavista"],
+      "corporate_executive": ["bi_2025_q4_belavista", "sv_2025_07_ops_belavista"]
+    }
+  },
+  "seasonality": {
+    "late_september": "Late September is a strong fit for romantic coastal travel in the Algarve, with warm weather and a generally calmer pace than peak summer.",
+    "peak_summer": "Peak Summer brings stronger beach demand and tighter restaurant/activity availability, so advance planning is important.",
+    "shoulder_apr_may": "Shoulder Season can be a strong value window for luxury clients prioritizing scenery, dining, and spa over peak beach energy.",
+    "low_nov_mar": "Low season operations across the Algarve can vary; verify local venue openings and beach/weather expectations before positioning."
+  },
+  "risks": [
+    {
+      "riskId": "boutique_scale_expectation",
+      "text": "Clients expecting a large resort footprint and extensive on-site programming may find the boutique scale too limited.",
+      "severity": "medium",
+      "seasonRelevance": ["late_september", "peak_summer", "shoulder_apr_may"],
+      "sourceIds": ["sv_2025_05_ines_belavista", "pov_2026_01_belavista"]
+    },
+    {
+      "riskId": "peak_booking_pressure",
+      "text": "Peak summer room preferences and popular dining slots can tighten quickly without early booking coordination.",
+      "severity": "medium",
+      "seasonRelevance": ["peak_summer", "late_september"],
+      "sourceIds": ["sv_2025_07_ops_belavista", "ptf_2025_08_couples_belavista"]
+    },
+    {
+      "riskId": "family_programming_limit",
+      "text": "Family fit depends on expectations, as the property is stronger on charm and location than activity-heavy programming.",
+      "severity": "low",
+      "seasonRelevance": ["peak_summer", "late_september"],
+      "sourceIds": ["sv_2024_08_joao_belavista_family", "ptf_2024_06_family_belavista"]
+    }
+  ],
+  "promotions": [
+    {
+      "promoId": "promo_4nf",
+      "name": "4th Night Free",
+      "description": "4th night free on select room and suite categories in specified travel windows.",
+      "validity": {
+        "bookingFrom": "2025-12-10",
+        "bookingTo": "2026-04-30",
+        "travelFrom": "2026-03-15",
+        "travelTo": "2026-06-30"
+      },
+      "eligibility": ["Select categories only", "Blackout dates apply"],
+      "sourceIds": ["promo_2026_q2_belavista_4nf"]
+    },
+    {
+      "promoId": "promo_early_booking_10",
+      "name": "Early Booking 10%",
+      "description": "10% discount for eligible advance purchase bookings.",
+      "validity": {
+        "bookingFrom": "2025-12-10",
+        "bookingTo": "2026-05-31",
+        "travelFrom": "2026-03-01",
+        "travelTo": "2026-10-31"
+      },
+      "eligibility": ["Advance purchase required", "Payment and cancellation restrictions apply"],
+      "sourceIds": ["promo_2026_q2_belavista_eb10"]
+    }
+  ],
+  "contract": {
+    "sourceIds": ["ct_2025_master_belavista"],
+    "stackingRules": [
+      {
+        "ruleId": "sr_nonstack_4nf_eb15",
+        "text": "4th Night Free cannot be combined with Early Booking discount unless a signed annex explicitly overrides this rule.",
+        "allowsCombination": false,
+        "appliesToPromoIds": ["promo_4nf", "promo_early_booking_10"],
+        "sourceIds": ["ct_2025_master_belavista"]
+      },
+      {
+        "ruleId": "sr_contract_controls_promos",
+        "text": "Contract annex and official promotion bulletins govern combinability; unverified notes cannot override.",
+        "allowsCombination": false,
+        "appliesToPromoIds": [],
+        "sourceIds": ["ct_2025_master_belavista"]
+      }
+    ]
+  },
+  "bookingIntelligence": {
+    "avgBookingValueUsd": 6200,
+    "qualitativeSummary": "Premium boutique booking value with strong couples demand in warm-weather periods",
+    "patterns": [
+      "Couples and anniversary trips over-index versus large family segments",
+      "Sea-view room categories convert well when positioned around romance, dining, and beachfront charm"
+    ],
+    "sourceIds": ["bi_2025_q4_belavista"]
+  },
+  "feedbackThemes": [
+    {
+      "themeId": "ft_romance_charm",
+      "label": "Romance + historic charm",
+      "text": "Guests frequently highlight the romantic setting, historic character, and elevated service feel.",
+      "sourceIds": ["ptf_2025_08_couples_belavista"]
+    },
+    {
+      "themeId": "ft_advance_planning",
+      "label": "Advance planning",
+      "text": "Experience quality improves when preferred rooms, dining times, and local activities are secured ahead of travel.",
+      "sourceIds": ["ptf_2025_08_couples_belavista", "ptf_2024_06_family_belavista"]
+    }
+  ],
+  "ujvPov": {
+    "talkTrack": [
+      "Sell Bela Vista Hotel & Spa as a romantic, historic beachfront boutique option in the Algarve, not a large-format resort.",
+      "Lead with sea views, classic Portuguese elegance, and a strong Algarve dining story.",
+      "Qualify for preferred pace and property scale early to ensure fit for families and high-activity travelers."
+    ],
+    "sourceIds": ["pov_2026_01_belavista", "sv_2025_05_ines_belavista", "bi_2025_q4_belavista"]
+  }
+}

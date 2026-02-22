@@ -10,7 +10,11 @@ import type {
   TextSection,
 } from "@/lib/types";
 
-const hotelOptions = [{ value: "amanzoe_gr", label: "Amanzoe (Greece)" }];
+const hotelOptions = [
+  { value: "amanzoe_gr", label: "Amanzoe (Greece)" },
+  { value: "seven_pines_ibiza_es", label: "7Pines Resort Ibiza (Spain)" },
+  { value: "bela_vista_portimao_pt", label: "Bela Vista Hotel & Spa (Portugal)" },
+];
 const travelerOptions = [
   { value: "honeymoon", label: "Honeymoon" },
   { value: "multi_gen_family", label: "Multi-gen Family" },
@@ -131,27 +135,46 @@ function CitationList({ citations }: { citations: TextSection["citations"] | Pro
 function FoldableResultCard({
   title,
   icon,
+  showAiTag = false,
   defaultOpen = false,
+  open: controlledOpen,
+  onOpenChange,
   children,
 }: {
   title: string;
   icon: string;
+  showAiTag?: boolean;
   defaultOpen?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [internalOpen, setInternalOpen] = useState(defaultOpen);
+  const open = controlledOpen ?? internalOpen;
+
+  const setOpen = (next: boolean) => {
+    if (controlledOpen === undefined) {
+      setInternalOpen(next);
+    }
+    onOpenChange?.(next);
+  };
 
   return (
     <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => setOpen(!open)}
         aria-expanded={open}
         className="flex w-full items-center justify-between gap-3 text-left"
       >
-        <h3 className="text-base font-semibold text-slate-900">
+        <h3 className="flex items-center gap-2 text-base font-semibold text-slate-900">
           <span className="mr-2">{icon}</span>
-          {title}
+          <span>{title}</span>
+          {showAiTag ? (
+            <span className="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-rose-700">
+              AI
+            </span>
+          ) : null}
         </h3>
         <span className="text-sm text-slate-500">{open ? "▾" : "▸"}</span>
       </button>
@@ -165,15 +188,21 @@ function TextSectionCard({
   title,
   icon,
   section,
+  showAiTag = false,
+  open,
+  onOpenChange,
 }: {
   title: string;
   icon: string;
   section: TextSection;
+  showAiTag?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }) {
   const lines = section.content.split("\n").filter(Boolean);
 
   return (
-    <FoldableResultCard title={title} icon={icon}>
+    <FoldableResultCard title={title} icon={icon} showAiTag={showAiTag} open={open} onOpenChange={onOpenChange}>
       <div className="space-y-2 text-sm text-slate-800">
         {lines.map((line, idx) => (
           <p key={`${idx}-${line.slice(0, 12)}`} className="leading-6">
@@ -243,9 +272,25 @@ function TextSectionCard({
   );
 }
 
-function PromotionsCard({ section }: { section: PromotionsSection }) {
+function PromotionsCard({
+  section,
+  showAiTag = false,
+  open,
+  onOpenChange,
+}: {
+  section: PromotionsSection;
+  showAiTag?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
   return (
-    <FoldableResultCard title="Active Promotions (Deterministic)" icon="🎁">
+    <FoldableResultCard
+      title="Active Promotions (Deterministic)"
+      icon="🎁"
+      showAiTag={showAiTag}
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       {section.status === "INSUFFICIENT_SOURCES" ? (
         <p className="text-sm text-slate-700">Insufficient verified sources to answer this section.</p>
       ) : (
@@ -330,6 +375,13 @@ export default function Home() {
   const [toast, setToast] = useState<string | null>(null);
   const [enrichmentSignal, setEnrichmentSignal] = useState<EnrichmentSignal | null>(null);
   const [showGlossary, setShowGlossary] = useState(false);
+  const [openCards, setOpenCards] = useState<Record<SectionKey, boolean>>({
+    positioning: false,
+    travelerFit: false,
+    risks: false,
+    promotions: false,
+    ujvPov: false,
+  });
 
   const canSubmitFeedback = helpful !== null;
 
@@ -547,20 +599,59 @@ export default function Home() {
               <div className="rounded-xl border border-rose-300 bg-rose-50 p-4 text-sm text-rose-900">{error}</div>
             ) : null}
 
-            {!response ? (
+            {loading ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600 shadow-sm">
+                Generating structured brief... please wait.
+              </div>
+            ) : !response ? (
               <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-sm text-slate-600 shadow-sm">
                 Select a structured flow and generate a brief. Results will render as citation-backed section cards here.
               </div>
             ) : (
               <div className="space-y-4">
-                <TextSectionCard title="Positioning" icon="🏨" section={response.sections.positioning} />
-                <TextSectionCard title="Traveler Fit" icon="💍" section={response.sections.travelerFit} />
+                <TextSectionCard
+                  title="Positioning"
+                  icon="🏨"
+                  section={response.sections.positioning}
+                  showAiTag={Boolean(response.sections.positioning.aiModified)}
+                  open={openCards.positioning}
+                  onOpenChange={(open) => setOpenCards((prev) => ({ ...prev, positioning: open }))}
+                />
+                <TextSectionCard
+                  title="Traveler Fit"
+                  icon="💍"
+                  section={response.sections.travelerFit}
+                  showAiTag={Boolean(response.sections.travelerFit.aiModified)}
+                  open={openCards.travelerFit}
+                  onOpenChange={(open) => setOpenCards((prev) => ({ ...prev, travelerFit: open }))}
+                />
                 {response.sections.risks ? (
-                  <TextSectionCard title="Risks / Caveats" icon="⚠" section={response.sections.risks} />
+                  <TextSectionCard
+                    title="Risks / Caveats"
+                    icon="⚠"
+                    section={response.sections.risks}
+                    showAiTag={Boolean(response.sections.risks.aiModified)}
+                    open={openCards.risks}
+                    onOpenChange={(open) => setOpenCards((prev) => ({ ...prev, risks: open }))}
+                  />
                 ) : null}
-                {response.sections.promotions ? <PromotionsCard section={response.sections.promotions} /> : null}
+                {response.sections.promotions ? (
+                  <PromotionsCard
+                    section={response.sections.promotions}
+                    showAiTag={Boolean(response.sections.promotions.aiModified)}
+                    open={openCards.promotions}
+                    onOpenChange={(open) => setOpenCards((prev) => ({ ...prev, promotions: open }))}
+                  />
+                ) : null}
                 {response.sections.ujvPov ? (
-                  <TextSectionCard title="UJV POV / Talk Track" icon="🧠" section={response.sections.ujvPov} />
+                  <TextSectionCard
+                    title="UJV POV / Talk Track"
+                    icon="🧠"
+                    section={response.sections.ujvPov}
+                    showAiTag={Boolean(response.sections.ujvPov.aiModified)}
+                    open={openCards.ujvPov}
+                    onOpenChange={(open) => setOpenCards((prev) => ({ ...prev, ujvPov: open }))}
+                  />
                 ) : null}
               </div>
             )}

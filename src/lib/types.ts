@@ -185,6 +185,7 @@ export interface TextSection {
   semanticChunksUsed: UnstructuredChunk[];
   retrievalBreakdown: RetrievalBreakdown;
   conflictsIgnored: ConflictEvent[];
+  aiModified?: boolean;
 }
 
 export interface PromotionsSection {
@@ -208,6 +209,7 @@ export interface PromotionsSection {
   semanticChunksUsed: UnstructuredChunk[];
   retrievalBreakdown: RetrievalBreakdown;
   conflictsIgnored: ConflictEvent[];
+  aiModified?: boolean;
 }
 
 export interface QueryPlan {

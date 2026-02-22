@@ -91,6 +91,19 @@ async function readJson<T>(filename: string): Promise<T> {
   return JSON.parse(raw) as T;
 }
 
+async function readHotelById(hotelId: string): Promise<HotelData | null> {
+  const dataDir = path.join(process.cwd(), "data");
+  const files = await fs.readdir(dataDir);
+  const hotelFiles = files.filter((file) => file.startsWith("hotel_") && file.endsWith(".json"));
+
+  for (const file of hotelFiles) {
+    const hotel = await readJson<HotelData>(file);
+    if (hotel.hotelId === hotelId) return hotel;
+  }
+
+  return null;
+}
+
 function toCitation(source: SourceRecord): Citation {
   return {
     sourceId: source.sourceId,
@@ -336,6 +349,7 @@ function buildPositioningSection(params: {
       semantic.conflictsIgnored.length,
     ),
     conflictsIgnored: semantic.conflictsIgnored,
+    aiModified: false,
   };
 }
 
@@ -394,6 +408,7 @@ function buildTravelerFitSection(params: {
       semantic.conflictsIgnored.length,
     ),
     conflictsIgnored: semantic.conflictsIgnored,
+    aiModified: false,
   };
 }
 
@@ -432,6 +447,7 @@ function buildRisksSection(params: {
       semantic.conflictsIgnored.length,
     ),
     conflictsIgnored: semantic.conflictsIgnored,
+    aiModified: false,
   };
 }
 
@@ -466,6 +482,7 @@ function buildUjvPovSection(params: {
       semantic.conflictsIgnored.length,
     ),
     conflictsIgnored: semantic.conflictsIgnored,
+    aiModified: false,
   };
 }
 
@@ -514,6 +531,7 @@ function buildPromotionsSection(params: {
       promoConflicts.length,
     ),
     conflictsIgnored: promoConflicts,
+    aiModified: false,
   };
 }
 
@@ -656,12 +674,12 @@ export async function runKnowledgeSpineQuery(rawPayload: unknown): Promise<Query
   const input = validateInput(rawPayload);
 
   const [hotel, allSources, allChunks] = await Promise.all([
-    readJson<HotelData>("hotel_amanzoe.json"),
+    readHotelById(input.hotelId),
     readJson<SourceRecord[]>("sources.json"),
     readJson<UnstructuredChunk[]>("unstructured_chunks.json"),
   ]);
 
-  if (hotel.hotelId !== input.hotelId) {
+  if (!hotel) {
     const error = new Error(`Hotel not found: ${input.hotelId}`);
     (error as Error & { status?: number }).status = 404;
     throw error;
@@ -764,16 +782,28 @@ export async function runKnowledgeSpineQuery(rawPayload: unknown): Promise<Query
     overrideKeys: Object.keys(llmOverrides),
   });
   if (llmOverrides.positioning && responseDraft.sections.positioning.status === "OK") {
-    responseDraft.sections.positioning.content = llmOverrides.positioning;
+    if (responseDraft.sections.positioning.content !== llmOverrides.positioning) {
+      responseDraft.sections.positioning.content = llmOverrides.positioning;
+      responseDraft.sections.positioning.aiModified = true;
+    }
   }
   if (llmOverrides.travelerFit && responseDraft.sections.travelerFit.status === "OK") {
-    responseDraft.sections.travelerFit.content = llmOverrides.travelerFit;
+    if (responseDraft.sections.travelerFit.content !== llmOverrides.travelerFit) {
+      responseDraft.sections.travelerFit.content = llmOverrides.travelerFit;
+      responseDraft.sections.travelerFit.aiModified = true;
+    }
   }
   if (llmOverrides.risks && responseDraft.sections.risks?.status === "OK") {
-    responseDraft.sections.risks.content = llmOverrides.risks;
+    if (responseDraft.sections.risks.content !== llmOverrides.risks) {
+      responseDraft.sections.risks.content = llmOverrides.risks;
+      responseDraft.sections.risks.aiModified = true;
+    }
   }
   if (llmOverrides.ujvPov && responseDraft.sections.ujvPov?.status === "OK") {
-    responseDraft.sections.ujvPov.content = llmOverrides.ujvPov;
+    if (responseDraft.sections.ujvPov.content !== llmOverrides.ujvPov) {
+      responseDraft.sections.ujvPov.content = llmOverrides.ujvPov;
+      responseDraft.sections.ujvPov.aiModified = true;
+    }
   }
   console.log("[LLM] Override application result", {
     applied: {
