@@ -1,0 +1,168 @@
+{
+  "hotelId": "amanzoe_gr",
+  "name": "Amanzoe",
+  "country": "Greece",
+  "region": "Peloponnese",
+  "category": "Resort",
+  "ownerTeam": "Destination Specialists",
+  "version": "v1",
+  "lastUpdatedAt": "2026-02-12",
+  "policy": {
+    "maxAgeDaysBySourceType": {
+      "promotion": 120,
+      "contract": 365,
+      "site_visit": 730,
+      "post_trip_feedback": 730,
+      "booking_intelligence": 365,
+      "ujv_pov": 365,
+      "unstructured_chunk": 365
+    }
+  },
+  "positioningTags": ["ultra-luxury", "privacy", "high-touch", "romantic", "architectural"],
+  "positioning": {
+    "strengths": [
+      "Strong sense of seclusion and privacy across pavilions and villas",
+      "High-touch service delivery with discreet on-property support",
+      "Architecture and setting create a calm, design-led experience"
+    ],
+    "sourceIds": ["sv_2025_01_maria", "pov_2026_01_amanzoe", "sv_2025_07_ops_logistics"]
+  },
+  "travelerFit": {
+    "common": [
+      "Best for travelers prioritizing privacy, space, and a resort-first stay",
+      "Works best when logistics and transfer expectations are set early"
+    ],
+    "byType": {
+      "honeymoon": [
+        "Excellent fit for honeymooners seeking seclusion and villa privacy",
+        "Strong match for celebratory stays with a calm, low-nightlife rhythm"
+      ],
+      "multi_gen_family": [
+        "Good fit for multi-gen families needing villa space and privacy",
+        "Less ideal for families wanting a highly programmed kids-club atmosphere"
+      ],
+      "solo_wellness": [
+        "Strong fit for solo wellness travelers seeking quiet, reset-oriented stays",
+        "Works well for low-distraction routines and on-property focus"
+      ],
+      "corporate_executive": [
+        "Selective fit for executives combining privacy with recovery time",
+        "Better for leadership retreats than high-volume meeting programs"
+      ]
+    },
+    "sourceIds": {
+      "common": ["sv_2025_01_maria", "bi_2025_q4_amanzoe"],
+      "honeymoon": ["ptf_2025_10_honeymoon", "sv_2025_01_maria"],
+      "multi_gen_family": ["sv_2024_09_nikos", "ptf_2023_01_family"],
+      "solo_wellness": ["sv_2025_01_maria", "pov_2026_01_amanzoe"],
+      "corporate_executive": ["bi_2025_q4_amanzoe", "sv_2025_07_ops_logistics"]
+    }
+  },
+  "seasonality": {
+    "late_september": "Late September typically suits clients seeking warm weather with a calmer post-peak rhythm.",
+    "peak_summer": "Peak Summer brings stronger demand and tighter availability windows; expectation-setting on pricing and booking lead time is essential.",
+    "shoulder_apr_may": "Shoulder Season can be attractive for value-seeking luxury travelers willing to prioritize tranquility over peak heat.",
+    "low_nov_mar": "Low season demand is narrower and operational cadence may differ; verify exact opening windows and inclusions."
+  },
+  "risks": [
+    {
+      "riskId": "transfer_time",
+      "text": "Transfer duration can feel long if not pre-framed, especially after long-haul arrivals.",
+      "severity": "medium",
+      "seasonRelevance": ["late_september", "peak_summer", "shoulder_apr_may", "low_nov_mar"],
+      "sourceIds": ["sv_2025_01_maria", "sv_2025_07_ops_logistics", "ptf_2025_10_honeymoon"]
+    },
+    {
+      "riskId": "nightlife_expectation",
+      "text": "Limited nightlife/off-property buzz may underwhelm travelers expecting an active evening scene.",
+      "severity": "medium",
+      "seasonRelevance": ["late_september", "peak_summer"],
+      "sourceIds": ["sv_2025_01_maria", "pov_2026_01_amanzoe"]
+    },
+    {
+      "riskId": "family_programming",
+      "text": "Family programming is less intensive than some resort comparables; fit depends on privacy vs activity priorities.",
+      "severity": "low",
+      "seasonRelevance": ["peak_summer", "late_september"],
+      "sourceIds": ["sv_2024_09_nikos", "ptf_2023_01_family"]
+    }
+  ],
+  "promotions": [
+    {
+      "promoId": "promo_4nf",
+      "name": "4th Night Free",
+      "description": "4th night free on select villa categories in defined travel windows.",
+      "validity": {
+        "bookingFrom": "2025-12-20",
+        "bookingTo": "2026-03-31",
+        "travelFrom": "2026-04-01",
+        "travelTo": "2026-06-30"
+      },
+      "eligibility": ["Select villa categories", "Blackout dates apply"],
+      "sourceIds": ["promo_2026_q1_4nf"]
+    },
+    {
+      "promoId": "promo_early_booking_15",
+      "name": "Early Booking 15%",
+      "description": "15% discount for eligible advance purchase bookings.",
+      "validity": {
+        "bookingFrom": "2025-12-20",
+        "bookingTo": "2026-04-30",
+        "travelFrom": "2026-04-01",
+        "travelTo": "2026-10-31"
+      },
+      "eligibility": ["Advance purchase required", "Payment/cancellation restrictions apply"],
+      "sourceIds": ["promo_2026_q1_eb15"]
+    }
+  ],
+  "contract": {
+    "sourceIds": ["ct_2025_master_amanzoe"],
+    "stackingRules": [
+      {
+        "ruleId": "sr_nonstack_4nf_eb15",
+        "text": "4th Night Free cannot be combined with Early Booking 15% unless a later signed annex explicitly overrides this rule.",
+        "allowsCombination": false,
+        "appliesToPromoIds": ["promo_4nf", "promo_early_booking_15"],
+        "sourceIds": ["ct_2025_master_amanzoe"]
+      },
+      {
+        "ruleId": "sr_contract_controls_promos",
+        "text": "Contract annex and published promotion bulletins control combinability; unverified notes cannot override.",
+        "allowsCombination": false,
+        "appliesToPromoIds": [],
+        "sourceIds": ["ct_2025_master_amanzoe"]
+      }
+    ]
+  },
+  "bookingIntelligence": {
+    "avgBookingValueUsd": 12800,
+    "qualitativeSummary": "High average booking value",
+    "patterns": [
+      "Couples and celebratory trips over-index",
+      "Late September and shoulder windows show strong interest for privacy-led luxury stays"
+    ],
+    "sourceIds": ["bi_2025_q4_amanzoe"]
+  },
+  "feedbackThemes": [
+    {
+      "themeId": "ft_privacy_service",
+      "label": "Privacy + service",
+      "text": "Guests repeatedly praise privacy, villa pools, and discreet service delivery.",
+      "sourceIds": ["ptf_2025_10_honeymoon"]
+    },
+    {
+      "themeId": "ft_transfer_expectation",
+      "label": "Transfer expectation-setting",
+      "text": "Transfer timing is manageable when pre-framed but becomes a friction point when surprises occur.",
+      "sourceIds": ["ptf_2025_10_honeymoon", "ptf_2023_01_family"]
+    }
+  ],
+  "ujvPov": {
+    "talkTrack": [
+      "Sell Amanzoe as a privacy-and-design sanctuary, not a nightlife-led beach destination.",
+      "Qualify early for transfer tolerance and evening-scene expectations.",
+      "For high-value celebratory trips, position villa privacy and service consistency as the core value drivers."
+    ],
+    "sourceIds": ["pov_2026_01_amanzoe", "sv_2025_01_maria", "bi_2025_q4_amanzoe"]
+  }
+}

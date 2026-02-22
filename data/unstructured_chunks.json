@@ -1,0 +1,62 @@
+[
+  {
+    "chunkId": "uc_2025_06_email_thread",
+    "hotelId": "amanzoe_gr",
+    "sourceType": "unstructured_chunk",
+    "title": "Email Thread — Notes on Amanzoe Promos",
+    "date": "2025-06-01",
+    "reliability": 0.6,
+    "text": "Someone mentioned 4th night free can stack with early booking (unconfirmed).",
+    "ownerTeam": "Ops",
+    "version": "v1",
+    "docRef": "internal://emails/thread/2025-06-01"
+  },
+  {
+    "chunkId": "uc_2024_05_web_snippet",
+    "hotelId": "amanzoe_gr",
+    "sourceType": "unstructured_chunk",
+    "title": "Web Snippet — Amanzoe Overview",
+    "date": "2024-05-10",
+    "reliability": 0.5,
+    "text": "Marketing copy about privacy, views, and tranquil atmosphere.",
+    "ownerTeam": "Marketing",
+    "version": "v1",
+    "docRef": "internal://web-snapshots/amanzoe/2024-05-10"
+  },
+  {
+    "chunkId": "uc_2025_08_nightlife_claim",
+    "hotelId": "amanzoe_gr",
+    "sourceType": "unstructured_chunk",
+    "title": "Agent Chat Extract — Positioning Spin",
+    "date": "2025-08-14",
+    "reliability": 0.45,
+    "text": "Amanzoe is a nightlife-focused luxury destination with strong late-night scene energy.",
+    "ownerTeam": "Sales",
+    "version": "v1",
+    "docRef": "internal://chat-exports/agents/2025-08-14"
+  },
+  {
+    "chunkId": "uc_2025_11_wellness_brief",
+    "hotelId": "amanzoe_gr",
+    "sourceType": "unstructured_chunk",
+    "title": "Advisor Brief — Wellness Angle",
+    "date": "2025-11-03",
+    "reliability": 0.68,
+    "text": "Advisors describe Amanzoe as a quiet reset option for wellness-focused travelers who prefer privacy and on-property time.",
+    "ownerTeam": "Destination Specialists",
+    "version": "v1",
+    "docRef": "internal://advisor-briefs/amanzoe/2025-11-03"
+  },
+  {
+    "chunkId": "uc_2025_09_logistics_note",
+    "hotelId": "amanzoe_gr",
+    "sourceType": "unstructured_chunk",
+    "title": "Ops Slack Summary — Arrival Logistics",
+    "date": "2025-09-22",
+    "reliability": 0.66,
+    "text": "Guests are happiest when transfer timing and arrival sequencing are clearly set before departure; late arrivals need extra expectation-setting.",
+    "ownerTeam": "Ops",
+    "version": "v1",
+    "docRef": "internal://slack-summaries/ops/amanzoe/2025-09-22"
+  }
+]
