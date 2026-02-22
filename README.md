@@ -1,11 +1,11 @@
-# UJV Atlas — Knowledge Spine Validation
+# UJV Atlas — Knowledge Platform Validation
 
 Thin proof-of-execution demo for validating the pattern:
 
 `structured knowledge -> controlled query -> grounded, transparent output with citations`
 
 This is intentionally **not a product** and **not a chatbot**.
-It exposes a constrained operational flow to prove a knowledge spine can be queried with guardrails and traceability.
+It exposes a constrained operational flow to prove a knowledge platform can be queried with guardrails and traceability.
 
 ## What This Demo Proves
 

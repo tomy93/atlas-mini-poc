@@ -50,6 +50,17 @@ const defaultForm: QueryInput = {
   useLLM: false,
 };
 
+const tooltipDefinitions = {
+  evidenceStrength: "Composite score based on citation coverage, recency, and source reliability.",
+  semanticChunksUsed: "Contextual text snippets retrieved via keyword matching to support narrative.",
+  structuredFactsUsed: "Canonical hotel model fields that contributed to this section.",
+  conflictsIgnored: "Semantic notes excluded because they contradicted canonical structured data.",
+  canonicalOverridesNotes: "Indicates that official structured data overrode conflicting semantic notes.",
+  policyCompliance: "Checks whether required sources meet internal data freshness limits.",
+  allSourcesWithinFreshnessPolicy: "Verifies that each source is within its allowed age window by type.",
+  escalationRequired: "Triggered when evidence strength is below threshold or policy checks fail.",
+} as const;
+
 type EnrichmentSignal = {
   hotelId: string;
   travelerType: QueryInput["travelerType"];
@@ -63,6 +74,35 @@ type EnrichmentSignal = {
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-600">{children}</label>;
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <span
+      className="relative inline-flex items-center align-middle"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        aria-label="Show definition"
+        className="ml-1 inline-flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border border-slate-400 text-[10px] font-bold text-slate-600"
+        onClick={() => setOpen((v) => !v)}
+      >
+        ?
+      </button>
+      <span
+        role="tooltip"
+        className={`pointer-events-none absolute left-0 top-full z-30 mt-2 w-72 max-w-[280px] rounded-md bg-slate-900 px-3 py-2 text-xs leading-5 text-white shadow-lg transition-opacity ${
+          open ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        {text}
+      </span>
+    </span>
+  );
 }
 
 function CitationList({ citations }: { citations: TextSection["citations"] | PromotionsSection["citations"] }) {
@@ -115,13 +155,32 @@ function TextSectionCard({
       </div>
 
       <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
-        Retrieval Breakdown: Structured facts used: {section.retrievalBreakdown.structuredFactsCount} | Semantic chunks used: {section.retrievalBreakdown.semanticChunksCount} | Overrides applied: {section.retrievalBreakdown.overridesApplied ? "YES" : "NO"} | Conflicts ignored: {section.retrievalBreakdown.conflictsIgnoredCount}
+        Retrieval Breakdown:{" "}
+        <span className="inline-flex items-center">
+          Structured facts used
+          <InfoTooltip text={tooltipDefinitions.structuredFactsUsed} />
+        </span>
+        : {section.retrievalBreakdown.structuredFactsCount} |{" "}
+        <span className="inline-flex items-center">
+          Semantic chunks used
+          <InfoTooltip text={tooltipDefinitions.semanticChunksUsed} />
+        </span>
+        : {section.retrievalBreakdown.semanticChunksCount} | Overrides applied: {section.retrievalBreakdown.overridesApplied ? "YES" : "NO"} |{" "}
+        <span className="inline-flex items-center">
+          Conflicts ignored
+          <InfoTooltip text={tooltipDefinitions.conflictsIgnored} />
+        </span>
+        : {section.retrievalBreakdown.conflictsIgnoredCount}
       </div>
 
       {section.semanticChunksUsed.length > 0 ? (
         <details className="mt-3 rounded-md border border-slate-200 bg-white px-3 py-2">
           <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wide text-slate-600">
-            Semantic chunks used ({section.semanticChunksUsed.length})
+            <span className="inline-flex items-center">
+              Semantic chunks used
+              <InfoTooltip text={tooltipDefinitions.semanticChunksUsed} />
+            </span>{" "}
+            ({section.semanticChunksUsed.length})
           </summary>
           <ul className="mt-2 space-y-2 text-sm text-slate-700">
             {section.semanticChunksUsed.map((chunk) => (
@@ -137,7 +196,10 @@ function TextSectionCard({
 
       {section.conflictsIgnored.length > 0 ? (
         <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3">
-          <div className="text-xs font-semibold uppercase tracking-wide text-amber-900">Conflicts ignored</div>
+          <div className="inline-flex items-center text-xs font-semibold uppercase tracking-wide text-amber-900">
+            Conflicts ignored
+            <InfoTooltip text={tooltipDefinitions.conflictsIgnored} />
+          </div>
           <ul className="mt-2 space-y-2 text-sm text-amber-900">
             {section.conflictsIgnored.map((conflict) => (
               <li key={`${conflict.chunkId}-${conflict.structuredRuleRef}`}>
@@ -205,7 +267,10 @@ function PromotionsCard({ section }: { section: PromotionsSection }) {
 
       {section.conflictsIgnored.length > 0 ? (
         <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900">
-          <div className="text-xs font-semibold uppercase tracking-wide">Canonical overrides notes</div>
+          <div className="inline-flex items-center text-xs font-semibold uppercase tracking-wide">
+            Canonical overrides notes
+            <InfoTooltip text={tooltipDefinitions.canonicalOverridesNotes} />
+          </div>
           <ul className="mt-2 space-y-1">
             {section.conflictsIgnored.map((conflict) => (
               <li key={`${conflict.chunkId}-${conflict.structuredRuleRef}`}>
@@ -241,6 +306,7 @@ export default function Home() {
   const [targetSection, setTargetSection] = useState<EnrichmentSignal["targetSection"]>("unknown");
   const [toast, setToast] = useState<string | null>(null);
   const [enrichmentSignal, setEnrichmentSignal] = useState<EnrichmentSignal | null>(null);
+  const [showGlossary, setShowGlossary] = useState(false);
 
   const canSubmitFeedback = helpful !== null;
 
@@ -306,10 +372,37 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <header className="mb-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h1 className="text-2xl font-semibold tracking-tight">UJV Atlas — Knowledge Spine Validation</h1>
-          <p className="mt-1 text-sm font-medium text-slate-700">Thin Operational Slice (Internal Demo)</p>
-          <p className="mt-2 text-sm text-slate-600">Controlled flows, grounded output, citations required.</p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold tracking-tight">UJV Atlas — Knowledge Platform Validation</h1>
+              <p className="mt-1 text-sm font-medium text-slate-700">Thin Operational Slice (Internal Demo)</p>
+              <p className="mt-2 text-sm text-slate-600">Controlled flows, grounded output, citations required.</p>
+            </div>
+            <div className="sm:pt-1">
+              <button
+                type="button"
+                onClick={() => setShowGlossary((v) => !v)}
+                className="text-sm text-slate-600 underline decoration-slate-300 underline-offset-4 hover:text-slate-900"
+              >
+                ℹ️ Data Model Glossary
+              </button>
+            </div>
+          </div>
         </header>
+        {showGlossary ? (
+          <div className="mb-6 rounded-xl border border-slate-200 bg-slate-100 p-4 text-xs leading-5 text-slate-700">
+            <div className="font-semibold text-slate-900">STRUCTURED (CANONICAL) DATA</div>
+            <p className="mt-1">
+              Governed, contract-backed fields from the official hotel model (e.g., promotions, stacking rules,
+              positioning tags). These define business truth.
+            </p>
+            <div className="mt-3 font-semibold text-slate-900">UNSTRUCTURED (SEMANTIC) NOTES</div>
+            <p className="mt-1">
+              Contextual text snippets (emails, advisor briefs, web content) used for narrative support. These cannot
+              override canonical data.
+            </p>
+          </div>
+        ) : null}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
           <aside className="lg:col-span-3">
@@ -456,7 +549,10 @@ export default function Home() {
                 <div className="mt-4 space-y-5 text-sm">
                   <div>
                     <div className="flex items-center justify-between">
-                      <span className="font-medium text-slate-800">Evidence Strength</span>
+                      <span className="inline-flex items-center font-medium text-slate-800">
+                        Evidence Strength
+                        <InfoTooltip text={tooltipDefinitions.evidenceStrength} />
+                      </span>
                       <span className="text-slate-700">
                         {response.trust.evidenceStrengthLabel} ({response.trust.evidenceStrengthScore.toFixed(2)})
                       </span>
@@ -490,19 +586,49 @@ export default function Home() {
                     <div className="space-y-1 text-slate-800">
                       <div>Structured sources used: {response.trust.stats.structuredSourcesUsed}</div>
                       <div>Unstructured sources used: {response.trust.stats.unstructuredSourcesUsed}</div>
-                      <div>Semantic chunks used: {response.trust.stats.semanticChunksUsed}</div>
-                      <div>Structured facts used: {response.trust.stats.structuredFactsUsed}</div>
-                      <div>Conflicts ignored: {response.trust.stats.conflictsIgnored}</div>
+                      <div>
+                        <span className="inline-flex items-center">
+                          Semantic chunks used
+                          <InfoTooltip text={tooltipDefinitions.semanticChunksUsed} />
+                        </span>
+                        : {response.trust.stats.semanticChunksUsed}
+                      </div>
+                      <div>
+                        <span className="inline-flex items-center">
+                          Structured facts used
+                          <InfoTooltip text={tooltipDefinitions.structuredFactsUsed} />
+                        </span>
+                        : {response.trust.stats.structuredFactsUsed}
+                      </div>
+                      <div>
+                        <span className="inline-flex items-center">
+                          Conflicts ignored
+                          <InfoTooltip text={tooltipDefinitions.conflictsIgnored} />
+                        </span>
+                        : {response.trust.stats.conflictsIgnored}
+                      </div>
                     </div>
                   </div>
 
                   <div>
                     <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600">Validation Checks</div>
                     <div className="space-y-1">
-                      {trustChecks?.map((check) => <CheckRow key={check.label} label={check.label} ok={check.ok} />)}
+                      {trustChecks?.map((check) => (
+                        <div key={check.label} className="flex items-start">
+                          <CheckRow label={check.label} ok={check.ok} />
+                          {check.label === "All sources within freshness policy" ? (
+                            <InfoTooltip text={tooltipDefinitions.allSourcesWithinFreshnessPolicy} />
+                          ) : null}
+                        </div>
+                      ))}
                     </div>
                     <div className="mt-3 text-sm text-slate-800">
-                      Escalation Required: <span className={response.trust.escalationNeeded ? "font-semibold text-rose-700" : "font-semibold text-emerald-700"}>{response.trust.escalationNeeded ? "YES" : "NO"}</span>
+                      <span className="inline-flex items-center">
+                        Escalation Required
+                        <InfoTooltip text={tooltipDefinitions.escalationRequired} />
+                      </span>
+                      :{" "}
+                      <span className={response.trust.escalationNeeded ? "font-semibold text-rose-700" : "font-semibold text-emerald-700"}>{response.trust.escalationNeeded ? "YES" : "NO"}</span>
                     </div>
                     {response.trust.escalationNeeded ? (
                       <div className="mt-1 text-xs text-slate-700">{response.trust.escalationReason}</div>
@@ -511,7 +637,13 @@ export default function Home() {
 
                   <div>
                     <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-600">Policy</div>
-                    <div className="text-slate-800">Policy Compliance: {response.trust.policyCompliance}</div>
+                    <div className="text-slate-800">
+                      <span className="inline-flex items-center">
+                        Policy Compliance
+                        <InfoTooltip text={tooltipDefinitions.policyCompliance} />
+                      </span>
+                      : {response.trust.policyCompliance}
+                    </div>
                     <div className="text-slate-800">Policy check result: {response.trust.guardrails.withinFreshnessPolicy}</div>
                     {response.trust.guardrails.policyWarnings.length > 0 ? (
                       <ul className="mt-2 space-y-1 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900">
