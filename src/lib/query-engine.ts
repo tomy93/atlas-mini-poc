@@ -523,6 +523,10 @@ async function maybeLlmNarrativeOverride(params: {
   input: QueryInput;
 }): Promise<Partial<Record<"positioning" | "travelerFit" | "risks" | "ujvPov", string>>> {
   if (!params.input.useLLM || !process.env.OPENAI_API_KEY) {
+    console.log("[LLM] Skipped narrative override", {
+      useLLM: params.input.useLLM,
+      hasApiKey: Boolean(process.env.OPENAI_API_KEY),
+    });
     return {};
   }
 
@@ -558,6 +562,15 @@ async function maybeLlmNarrativeOverride(params: {
   };
 
   const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+  console.log("[LLM] Narrative override requested", {
+    model,
+    sectionStatuses: {
+      positioning: params.responseDraft.sections.positioning.status,
+      travelerFit: params.responseDraft.sections.travelerFit.status,
+      risks: params.responseDraft.sections.risks?.status ?? "NOT_REQUESTED",
+      ujvPov: params.responseDraft.sections.ujvPov?.status ?? "NOT_REQUESTED",
+    },
+  });
   const prompt = {
     instructions:
       "Rewrite section content into concise business-ready bullet text. Do not invent facts. If information is insufficient, keep the provided insufficient-sources sentence. Return JSON only with keys positioning/travelerFit/risks/ujvPov and string values. Do not return promotions.",
@@ -582,6 +595,11 @@ async function maybeLlmNarrativeOverride(params: {
       }),
     });
 
+    console.log("[LLM] OpenAI response", {
+      ok: res.ok,
+      status: res.status,
+      statusText: res.statusText,
+    });
     if (!res.ok) {
       return {};
     }
@@ -597,8 +615,14 @@ async function maybeLlmNarrativeOverride(params: {
     for (const key of ["positioning", "travelerFit", "risks", "ujvPov"] as const) {
       if (typeof parsed[key] === "string") out[key] = parsed[key];
     }
+    console.log("[LLM] Parsed override keys", {
+      keys: Object.keys(out),
+    });
     return out;
-  } catch {
+  } catch (error) {
+    console.log("[LLM] Narrative override failed", {
+      error: error instanceof Error ? error.message : String(error),
+    });
     return {};
   }
 }
@@ -730,6 +754,15 @@ export async function runKnowledgeSpineQuery(rawPayload: unknown): Promise<Query
   };
 
   const llmOverrides = await maybeLlmNarrativeOverride({ responseDraft, hotel, input });
+  console.log("[LLM] Applying overrides check", {
+    sectionStatuses: {
+      positioning: responseDraft.sections.positioning.status,
+      travelerFit: responseDraft.sections.travelerFit.status,
+      risks: responseDraft.sections.risks?.status ?? "NOT_REQUESTED",
+      ujvPov: responseDraft.sections.ujvPov?.status ?? "NOT_REQUESTED",
+    },
+    overrideKeys: Object.keys(llmOverrides),
+  });
   if (llmOverrides.positioning && responseDraft.sections.positioning.status === "OK") {
     responseDraft.sections.positioning.content = llmOverrides.positioning;
   }
@@ -742,6 +775,14 @@ export async function runKnowledgeSpineQuery(rawPayload: unknown): Promise<Query
   if (llmOverrides.ujvPov && responseDraft.sections.ujvPov?.status === "OK") {
     responseDraft.sections.ujvPov.content = llmOverrides.ujvPov;
   }
+  console.log("[LLM] Override application result", {
+    applied: {
+      positioning: Boolean(llmOverrides.positioning && responseDraft.sections.positioning.status === "OK"),
+      travelerFit: Boolean(llmOverrides.travelerFit && responseDraft.sections.travelerFit.status === "OK"),
+      risks: Boolean(llmOverrides.risks && responseDraft.sections.risks?.status === "OK"),
+      ujvPov: Boolean(llmOverrides.ujvPov && responseDraft.sections.ujvPov?.status === "OK"),
+    },
+  });
 
   const requestedSections = Object.values(responseDraft.sections);
   const allCitations = requestedSections.flatMap((section) => section.citations);

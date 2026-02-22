@@ -128,6 +128,39 @@ function CitationList({ citations }: { citations: TextSection["citations"] | Pro
   );
 }
 
+function FoldableResultCard({
+  title,
+  icon,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  icon: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-3 text-left"
+      >
+        <h3 className="text-base font-semibold text-slate-900">
+          <span className="mr-2">{icon}</span>
+          {title}
+        </h3>
+        <span className="text-sm text-slate-500">{open ? "▾" : "▸"}</span>
+      </button>
+
+      {open ? <div className="mt-3">{children}</div> : null}
+    </section>
+  );
+}
+
 function TextSectionCard({
   title,
   icon,
@@ -140,13 +173,8 @@ function TextSectionCard({
   const lines = section.content.split("\n").filter(Boolean);
 
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h3 className="text-base font-semibold text-slate-900">
-        <span className="mr-2">{icon}</span>
-        {title}
-      </h3>
-
-      <div className="mt-3 space-y-2 text-sm text-slate-800">
+    <FoldableResultCard title={title} icon={icon}>
+      <div className="space-y-2 text-sm text-slate-800">
         {lines.map((line, idx) => (
           <p key={`${idx}-${line.slice(0, 12)}`} className="leading-6">
             {line}
@@ -211,22 +239,17 @@ function TextSectionCard({
       ) : null}
 
       <CitationList citations={section.citations} />
-    </section>
+    </FoldableResultCard>
   );
 }
 
 function PromotionsCard({ section }: { section: PromotionsSection }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-      <h3 className="text-base font-semibold text-slate-900">
-        <span className="mr-2">🎁</span>
-        Active Promotions (Deterministic)
-      </h3>
-
+    <FoldableResultCard title="Active Promotions (Deterministic)" icon="🎁">
       {section.status === "INSUFFICIENT_SOURCES" ? (
-        <p className="mt-3 text-sm text-slate-700">Insufficient verified sources to answer this section.</p>
+        <p className="text-sm text-slate-700">Insufficient verified sources to answer this section.</p>
       ) : (
-        <div className="mt-3 space-y-4 text-sm text-slate-800">
+        <div className="space-y-4 text-sm text-slate-800">
           <div>
             <div className="text-xs font-semibold uppercase tracking-wide text-slate-600">Active promos</div>
             <ul className="mt-2 space-y-3">
@@ -282,7 +305,7 @@ function PromotionsCard({ section }: { section: PromotionsSection }) {
       ) : null}
 
       <CitationList citations={section.citations} />
-    </section>
+    </FoldableResultCard>
   );
 }
 
@@ -314,7 +337,6 @@ export default function Home() {
     event.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
       const res = await fetch("/api/query", {
         method: "POST",
@@ -533,9 +555,13 @@ export default function Home() {
               <div className="space-y-4">
                 <TextSectionCard title="Positioning" icon="🏨" section={response.sections.positioning} />
                 <TextSectionCard title="Traveler Fit" icon="💍" section={response.sections.travelerFit} />
-                {response.sections.risks ? <TextSectionCard title="Risks / Caveats" icon="⚠" section={response.sections.risks} /> : null}
+                {response.sections.risks ? (
+                  <TextSectionCard title="Risks / Caveats" icon="⚠" section={response.sections.risks} />
+                ) : null}
                 {response.sections.promotions ? <PromotionsCard section={response.sections.promotions} /> : null}
-                {response.sections.ujvPov ? <TextSectionCard title="UJV POV / Talk Track" icon="🧠" section={response.sections.ujvPov} /> : null}
+                {response.sections.ujvPov ? (
+                  <TextSectionCard title="UJV POV / Talk Track" icon="🧠" section={response.sections.ujvPov} />
+                ) : null}
               </div>
             )}
           </main>
